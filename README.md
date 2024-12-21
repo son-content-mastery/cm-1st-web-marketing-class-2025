@@ -35,7 +35,7 @@ pip install django
 
 ### 3. สร้างโปรเจค Django
 ```bash
-django-admin startproject mysite
+django-admin startproject mysite .
 ```
 
 ### 4. สร้าง App
