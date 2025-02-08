@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-5c2^%vj&rf2kw=^1z97g9=@_r$1+^u(+kzj^x6qv4v3s7g7m4d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['206b-2403-6200-8870-43f2-44c9-7736-c9f1-b17b.ngrok-free.app', 'localhost', '127.0.0.1',]
 
 
 # Application definition
@@ -51,7 +51,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,3 +121,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SITE_URL = "https://sonnycatfoodshop.com"

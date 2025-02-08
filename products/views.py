@@ -31,4 +31,17 @@ def category_detail(request, slug):
     }
     return render(request, 'products/category_detail.html', context)
 
-# products/templates/products
+
+from django.http import HttpResponse
+from django.conf import settings
+
+def robots_txt(request):
+    # Dynamically generate the robots.txt content
+    lines = [
+        "User-agent: *",
+        "Disallow: /admin/",  # Disallow access to the admin panel
+        "Disallow: /private/",  # Disallow access to private pages (if any)
+        "",
+        f"Sitemap: {settings.SITE_URL}/sitemap.xml",  # Reference to your sitemap
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")

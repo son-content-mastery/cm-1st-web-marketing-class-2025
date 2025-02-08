@@ -4,6 +4,13 @@
 
 {% block content %}
 <div class="container">
+    <br>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+        </ol>
+    </nav>
     <!-- Category Header -->
     <div class="row my-4">
         <div class="col">
@@ -13,9 +20,9 @@
     </div>
 
     <!-- Products Grid -->
-    <div class="row">
+    <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
         {% for product in products %}
-        <div class="col-md-4 mb-4">
+        <div class="col mb-4">
             <div class="card h-100">
                 {% if product.image %}
                 <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
@@ -43,6 +50,7 @@
         </div>
         {% endfor %}
     </div>
+    <!-- End Products Grid -->
 
     <!-- FAQ Accordion -->
     <div class="row">
@@ -72,13 +80,5 @@
         </div>
     </div>
     <!-- End FAQ Accordion -->
-
-    <!-- Breadcrumb Navigation -->
-    <nav aria-label="breadcrumb" class="mt-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">สินค้าทั้งหมด</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
-        </ol>
-    </nav>
 </div>
 {% endblock %}
