@@ -36,3 +36,18 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'slug': self.slug})
+    
+
+class FAQ(models.Model):
+    category = models.ForeignKey(Category, related_name='faqs', on_delete=models.CASCADE)
+    question = models.CharField(max_length=255)
+    answer = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.question
+
+    class Meta:
+        verbose_name = 'FAQ'
+        verbose_name_plural = 'FAQs'

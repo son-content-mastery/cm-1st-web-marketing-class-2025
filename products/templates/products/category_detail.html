@@ -44,6 +44,35 @@
         {% endfor %}
     </div>
 
+    <!-- FAQ Accordion -->
+    <div class="row">
+        <div class="col-md-6 mx-auto">  <!-- Center the FAQ section and set width to 50% -->
+            <br>
+            <h3 class="text-center">คำถามที่พบบ่อย</h3>  <!-- Center the heading -->
+            {% if faqs %}
+            <div class="accordion" id="faqAccordion">
+                {% for faq in faqs %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ forloop.counter }}">
+                            {{ faq.question }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            {{ faq.answer }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-center">ไม่มีคำถามที่พบบ่อยในขณะนี้</p>  <!-- Center the fallback message -->
+            {% endif %}
+        </div>
+    </div>
+    <!-- End FAQ Accordion -->
+
     <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb" class="mt-4">
         <ol class="breadcrumb">

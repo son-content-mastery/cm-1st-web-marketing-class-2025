@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product, Category
+from .models import Product, Category, FAQ
 
 
 def product_list(request):
@@ -22,10 +22,12 @@ def product_detail(request, slug):
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = category.products.filter(available=True)
+    faqs = category.faqs.all()  # Get all FAQs for this category
 
     context = {
         'category': category,
-        'products': products
+        'products': products,
+        'faqs': faqs
     }
     return render(request, 'products/category_detail.html', context)
 
