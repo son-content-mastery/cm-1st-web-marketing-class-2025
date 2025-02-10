@@ -38,7 +38,7 @@
                     {% else %}
                         <p class="text-danger">สินค้าหมด</p>
                     {% endif %}
-                    <a href="{% url 'product_detail' product.slug %}" class="btn btn-primary">
+                    <a href="{{ product.get_absolute_url }}" class="btn btn-primary">
                         ดูรายละเอียด
                     </a>
                 </div>

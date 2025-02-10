@@ -7,13 +7,20 @@ def product_list(request):
     return render(request, 'products/product_list.html', {'products': products})
 
 
-def product_detail(request, slug):
-    product = get_object_or_404(Product, slug=slug, available=True)
+def product_detail(request, category_slug, product_slug):
+    # Get the category and ensure the product belongs to it
+    category = get_object_or_404(Category, slug=category_slug)
+    product = get_object_or_404(Product, slug=product_slug, category=category, available=True)
+
+    # Query related products (same category, exclude current product)
     related_products = Product.objects.filter(
-        category=product.category, 
-        available=True).exclude(id=product.id)[:4] 
+        category=product.category,
+        available=True
+    ).exclude(id=product.id)[:4]
+
     context = {
-        'product': product, 
+        'category': category,
+        'product': product,
         'related_products': related_products
     }
     return render(request, 'products/product_detail.html', context)
@@ -42,6 +49,6 @@ def robots_txt(request):
         "Disallow: /admin/",  # Disallow access to the admin panel
         "Disallow: /private/",  # Disallow access to private pages (if any)
         "",
-        f"Sitemap: {settings.SITE_URL}/sitemap.xml",  # Reference to your sitemap
+        f"Sitemap: {settings.SITE_URL}/sitemap.xml",  # อ้างอิงไปที่ sitemap ของเรา
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")

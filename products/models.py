@@ -35,7 +35,11 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('product_detail', kwargs={'slug': self.slug})
+        # Include both category_slug and product_slug
+        return reverse('product_detail', kwargs={
+            'category_slug': self.category.slug,
+            'product_slug': self.slug
+        })
     
 
 class FAQ(models.Model):
