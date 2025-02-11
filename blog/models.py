@@ -1,3 +1,4 @@
+# blog/models.py
 from django.db import models
 from django.urls import reverse
 
@@ -25,6 +26,9 @@ class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, related_name='posts') 
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
 
     def get_absolute_url(self):
         return reverse('post_detail', kwargs={'slug': self.slug})

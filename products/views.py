@@ -27,14 +27,21 @@ def product_detail(request, category_slug, product_slug):
 
 
 def category_detail(request, slug):
+    # Get the category
     category = get_object_or_404(Category, slug=slug)
+
+    # Get products and FAQs for the category
     products = category.products.filter(available=True)
-    faqs = category.faqs.all()  # Get all FAQs for this category
+    faqs = category.faqs.all()
+
+    # Get related blog posts for the category
+    related_posts = category.related_posts.all()[:3]
 
     context = {
         'category': category,
         'products': products,
-        'faqs': faqs
+        'faqs': faqs,
+        'related_posts': related_posts, 
     }
     return render(request, 'products/category_detail.html', context)
 

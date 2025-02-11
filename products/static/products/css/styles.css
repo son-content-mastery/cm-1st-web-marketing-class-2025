@@ -1,0 +1,25 @@
+/* Shopee Button */
+.btn-shopee {
+    background-color: #ee4d2d; /* Shopee orange */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+/* Lazada Button */
+.btn-lazada {
+    background-color: #0071c2; /* Lazada blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+}
