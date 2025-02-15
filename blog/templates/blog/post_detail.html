@@ -1,27 +1,92 @@
 {% extends 'blog/base.html' %}
-
 {% block meta %}
 <title>{{ single_post.title }}</title>
 <meta name="description" content="{{ single_post.description }}">
-<rel="canonical" href="{{ single_post.get_absolute_url }}">
-
+<link rel="canonical" href="{{ single_post.get_absolute_url }}">
+<style>
+  /* Custom Blockquote Styling */
+.custom-blockquote {
+    border-left: 4px solid #007bff; /* Change the color to your desired value (e.g., blue) */
+    padding-left: 1rem;            /* Adds spacing between the line and text */
+    font-size: 1.1rem;             /* Slightly larger font size */
+    margin-bottom: 1.5rem;         /* Adds spacing below the blockquote */
+}
+</style>
 {% endblock %}
-
 {% block content %}
 <div class="container">
     <br>
-  <div class="col-sm-8">  
-    <h1>{{ single_post.title }}</h1>
-    <p>{{ single_post.description }}</p>
-    <p>อัปเดตล่าสุด: {{ single_post.date_updated | date }}</p>
-    <img src="{{ single_post.featured_image.url }}" class="card-img-top" alt="{{ single_post.title }}">
-    <br><br>
-    <p>{{ single_post.body | safe }}</p>
-  </div>
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-sm-8">
+            <h1>{{ single_post.title }}</h1>
+            <p>
+                อัปเดตล่าสุด: {{ single_post.date_updated | date }}
+                โดย {{ single_post.author.name }}
+            </p>
+            {% if single_post.featured_image %}
+            <img src="{{ single_post.featured_image.url }}" class="card-img-top" alt="{{ single_post.title }}">
+            {% endif %}
+            <br><br>
+            <!-- Description in Quote Format -->
+            <blockquote class="custom-blockquote text-muted fst-italic">
+                <p>{{ single_post.description }}</p>
+            </blockquote>
+            <p>{{ single_post.body | safe }}</p>
+
+            <!-- Recommended Products Section -->
+            <h5 class="mt-5">สินค้าแนะนำ</h5>
+            <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                {% if product %}
+                <div class="col mb-4">
+                    <div class="card h-100">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h6 class="card-title">{{ product.name }}</h6>
+                            <p class="card-text">{{ product.description|truncatewords:10 }}</p>
+                            <p class="card-text">
+                                <strong>ราคา: ฿{{ product.price }}</strong>
+                            </p>
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm">
+                                ดูรายละเอียด
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-sm-4">
+            <h5>บทความล่าสุด</h5>
+            <ul class="list-unstyled">
+                {% for article in recent_articles %}
+                <li>
+                    <a href="{{ article.get_absolute_url }}" class="text-dark text-decoration-none">
+                        <div class="d-flex align-items-center mb-3">
+                            {% if article.featured_image %}
+                            <img src="{{ article.featured_image.url }}" class="rounded me-3" style="width: 80px; height: 80px; object-fit: cover;" alt="{{ article.title }}">
+                            {% else %}
+                            <img src="https://via.placeholder.com/80" class="rounded me-3" alt="Placeholder Image">
+                            {% endif %}
+                            <div>
+                                <h6 class="mb-0">{{ article.title }}</h6>
+                                <small class="text-muted">โดย {{ article.author.name }}</small><br>
+                                <small class="text-muted">อัปเดตเมื่อ {{ article.date_updated | date }}</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                {% empty %}
+                <li>
+                    <p class="text-muted">ไม่พบบทความล่าสุด</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock %}
-
-
-
-
-

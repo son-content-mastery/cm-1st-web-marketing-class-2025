@@ -1,15 +1,16 @@
 {% extends 'blog/base.html' %}
-
+{% load static %}
 {% block meta %}
 <title>{{ product.name }} | SCFS</title>
-<!-- products/product_detail.html -->
+<link rel="stylesheet" href="{% static 'products/css/styles.css' %}">
+<!-- Structured Data for SEO -->
 <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Product",
       "name": "{{ product.name }}",
-      "description": "{{ product.description }}",
-      "image": "{{ product.image.url }}",
+      "description": "{{ product.description|striptags|escapejs }}",
+      "image": "{% if product.image %}{{ product.image.url }}{% else %}https://via.placeholder.com/300{% endif %}",
       "brand": {
         "@type": "Brand",
         "name": "SCFS"
@@ -23,12 +24,11 @@
       "category": "{{ product.category.name }}"
     }
 </script>
-
 {% endblock %}
-
 {% block content %}
 <div class="container">
     <br>
+    <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -36,18 +36,23 @@
           <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
         </ol>
     </nav>
+
+    <!-- Product Details -->
     <div class="row">
+        <!-- Product Image -->
         <div class="col-md-6">
             {% if product.image %}
             <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+            {% else %}
+            <img src="https://via.placeholder.com/400x400" class="img-fluid" alt="{{ product.name }}">
             {% endif %}
         </div>
+
+        <!-- Product Information -->
         <div class="col-md-6">
             <h1>{{ product.name }}</h1>
             <p class="text-muted">หมวดหมู่: 
-                <a href="{{ product.category.get_absolute_url }}">
-                    {{ product.category.name }}
-                </a>
+                <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>
             </p>
             <h2>฿{{ product.price }}</h2>
             <p>{{ product.description }}</p>
@@ -56,45 +61,66 @@
             {% else %}
             <p class="text-danger">สินค้าหมด</p>
             {% endif %}
-        </div>
 
-        <!-- Product detail -->
-        <div class="col-md-6">
-            <br>
-            {{ product.body | safe }}
+            <!-- Affiliate Buttons -->
+            <div class="mt-4">
+                {% if product.shopee_affiliate_link %}
+                <a href="{{ product.shopee_affiliate_link }}" target="_blank" rel="nofollow sponsored" 
+                   style="background-color: #ee4d2d; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-right: 10px;">
+                    Buy on Shopee
+                </a>
+                {% endif %}
+                {% if product.lazada_affiliate_link %}
+                <a href="{{ product.lazada_affiliate_link }}" target="_blank" rel="nofollow sponsored" 
+                   style="background-color: #0071c2; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+                    Buy on Lazada
+                </a>
+                {% endif %}
+            </div>
         </div>
+    </div>
 
-        <!-- Related Products Section products/product_detail.html -->
-        {% if related_products %}
-        <div class="row mt-5">
-            <div class="col-md-12">
-                <h3>สินค้าที่เกี่ยวข้อง</h3>
-                <div class="row">
-                    {% for related_product in related_products %}
-                    <div class="col-md-3">
-                        <div class="card mb-4">
-                            <a href="{{ related_product.get_absolute_url }}">
-                                {% if related_product.image %}
-                                <img src="{{ related_product.image.url }}" class="card-img-top" alt="{{ related_product.name }}">
-                                {% endif %}
-                            </a>
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a href="{{ related_product.get_absolute_url }}">{{ related_product.name }}</a>
-                                </h5>
-                                <p class="card-text">฿{{ related_product.price }}</p>
-                                <a href="{{ related_product.get_absolute_url }}" class="btn btn-primary">ดูรายละเอียด</a>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
+    <!-- Full Product Description -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h3>รายละเอียดสินค้า</h3>
+            <div class="card">
+                <div class="card-body">
+                    {{ product.body | safe }}
                 </div>
             </div>
         </div>
-        {% endif %}
-
-
-
     </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h3>สินค้าที่เกี่ยวข้อง</h3>
+            <div class="row">
+                {% for related_product in related_products %}
+                <div class="col-md-3">
+                    <div class="card mb-4">
+                        <a href="{{ related_product.get_absolute_url }}">
+                            {% if related_product.image %}
+                            <img src="{{ related_product.image.url }}" class="card-img-top" alt="{{ related_product.name }}">
+                            {% else %}
+                            <img src="https://via.placeholder.com/300" class="card-img-top" alt="{{ related_product.name }}">
+                            {% endif %}
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ related_product.get_absolute_url }}">{{ related_product.name }}</a>
+                            </h5>
+                            <p class="card-text">฿{{ related_product.price }}</p>
+                            <a href="{{ related_product.get_absolute_url }}" class="btn btn-primary">ดูรายละเอียด</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
