@@ -1,22 +1,22 @@
 # Deploy Django
 
-## Install Dependencies
+## Step 1: Install Linux Dependencies
 
 ```sh
 apt update && sudo apt upgrade -y
 apt install python3-pip python3-venv nginx -y
 ```
 
-## Config GIT
+## Step 2: Configure Git
 
 ```sh
 git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
 ```
 
-## Clone Django Project
+## Step 3: Clone Django Project
 
-Clone your django repository
+> Clone your django repository
 
 ```sh
 cd /var/www
@@ -24,56 +24,76 @@ git clone https://your-repo.git django_project
 cd django_project
 ```
 
-## Step 3: Setup Python Virtual Environment
+## Step 4: Setup Python Virtual Environment
 
-> Create and activate a Python virtual environment:
+### Create and activate a Python virtual environment:
 
 ```sh
 python3 -m venv env
 source env/bin/activate
 ```
 
-> Install required packages:
+### Install required packages:
 
 ```sh
 pip install -r requirements.txt
 pip install gunicorn
 ```
 
-> Prepare the Database
+## Step 5: Prepare the Database
+
+### Prepare the Database
 
 ```sh
 python manage.py makemigrations
 python manage.py migrate
 ```
 
+### createsuperuser
+
+```sh
+python manage.py createsuperuser
+```
+
+## Step 6: Check Django Setup
+
 > Check Overall working
 
 `python manage.py runserver 0.0.0.0:8000`
+
+## Step 7: Collect Static Files
 
 > Run collect static files:
 
 `python manage.py collectstatic --noinput`
 
+## Step 8: Test Gunicorn Manually
+
 > Run Test Gunicorn:
 
 `gunicorn --bind 0.0.0.0:8000 mysite.wsgi.application`
 
-# Setup Linux user
+## Step 9: Setup a Dedicated Linux User for Django
 
-```sh
-adduser django-app
+> Create a new user:
 
-sudo chown -R django-app:django-app /home/youruser/django_project
+`adduser django-app`
 
-sudo su - django-app
-```
+> Change ownership of the Django project:
 
-## Setup Gunicorn as a Systemd Service
+`chown -R django-app:django-app /home/youruser/django_project`
 
-### Create guni
+> Switch to the new user:
+
+`sudo su - django-app`
+
+## Step 10: Configure Gunicorn with Systemd
+
+> Create a systemd service for Gunicorn:
 
 `vi /etc/systemd/system/gunicorn.service`
+
+> Paste the following:
 
 ```sh
 [Unit]
@@ -90,7 +110,7 @@ ExecStart=/var/www/cm-1st-web-marketing-class-2025/env/bin/gunicorn --workers 3 
 WantedBy=multi-user.target
 ```
 
-### Reload the Gunicorn
+> Reload the Gunicorn
 
 ```sh
 systemctl daemon-reload
@@ -98,11 +118,11 @@ systemctl restart gunicorn
 systemctl enable gunicorn
 ```
 
-### Recheck Gunicorn
+> Check if Gunicorn is running:
 
 `ps aux | grep gunicorn`
 
-## Configure Nginx (Static & Media Files)
+## Step 11: Configure Nginx to Serve Django App
 
 ### Create an Nginx configuration file for your Django project.
 
@@ -110,7 +130,7 @@ systemctl enable gunicorn
 vi /etc/nginx/sites-available/django_project
 ```
 
-> Add this config
+> Paste the following configuration:
 
 ```sh
 server {
@@ -134,61 +154,85 @@ server {
 }
 ```
 
+## Step 12: Enable and Restart Nginx
+
 > Link the config file to sites-enabled
 
 `ln -s /etc/nginx/sites-available/django_project /etc/nginx/sites-enabled/`
 
-> Test and Restart Nginx
+> Test Nginx configuration:
 
-```sh
-nginx -t
+`nginx -t`
 
-systemctl reload nginx.service
-```
+> Restart Nginx:
 
-### Install and Config SSL
+`systemctl reload nginx.service`
 
-> Run the following command to install Certbot
+## Step 13: Install & Configure SSL (Let’s Encrypt)
+
+### Install Certbot
 
 `apt install certbot python3-certbot-nginx -y`
 
-> Check certbot install
+### Verify Certbot Installation
 
 `certbot --version`
 
-### Generate cert
+### Generate SSL Certificate
 
 > Run the command line
 
-`certbot --nginx -d wizzops.cloud -d www.wizzops.cloud`
+- `certbot --nginx -d yourdomain.com -d www.yourdomain.com`
+- `certbot --nginx -d wizzops.cloud -d www.wizzops.cloud`
 
-### Recheck Certificate on nginx config
+### Verify SSL Configuration in Nginx
+
+> Check the file:
 
 `vi /etc/nginx/sites-available/django_project`
 
-### Recheck and Reload Nginx config
+> You should see lines like:
 
 ```sh
-nginx -t
-
-systemctl reload nginx.service
+ssl_certificate /etc/letsencrypt/live/wizzops.cloud/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/wizzops.cloud/privkey.pem;
 ```
 
-### Automatic Renewal SSL Certificate Renewal
+> Restart Nginx:
+
+`systemctl reload nginx.service`
+
+## Step 14: Setup Auto-Renewal for SSL
 
 - Setup crontab to do the job `crontab -e`
-- Add this config `0 3 */80 * * certbot renew --quiet && systemctl restart nginx`
-  - ```sh
-    •	0 3 → Run at 3:00 AM.
-	•	*/80 → Run every 80 days.
-	•	certbot renew --quiet → Renews SSL only if needed.
-	•	&& systemctl restart nginx → Restarts Nginx to apply new SSL certificate.
-    ```
+- Add this line at the bottom `0 3 */80 * * certbot renew --quiet && systemctl restart nginx`
 
-### Test Cerbot Renewal
+```sh
+•	0 3 → Run at 3:00 AM.
+•	*/80 → Run every 80 days.
+•	certbot renew --quiet → Renews SSL only if needed.
+•	&& systemctl restart nginx → Restarts Nginx to apply new SSL certificate.
+```
+
+## Step 15: Test SSL Renewal
+
+> To test renewal:
 
 `certbot renew --dry-run`
 
-## Create Superuser Django app
+## Step 16: Adjust Firewall Rules
 
-`python manage.py createsuperuser`
+> Ensure the firewall allows web traffic:
+
+`sudo ufw allow 'Nginx Full'`
+
+> Check firewall status:
+
+`sudo ufw status`
+
+## Step 17: Reboot and Final Check
+
+```sh
+systemctl status gunicorn
+systemctl status nginx
+```
