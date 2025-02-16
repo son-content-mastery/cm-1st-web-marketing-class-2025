@@ -25,7 +25,7 @@ cd django_project
 ```
 
 ## Step 4: Setup Python Virtual Environment
-
+sudo systemctl status gunicorn
 ### Create and activate a Python virtual environment:
 
 ```sh
@@ -106,7 +106,7 @@ After=network.target
 User=django-app
 Group=django-app
 WorkingDirectory=/var/www/cm-1st-web-marketing-class-2025
-ExecStart=/var/www/cm-1st-web-marketing-class-2025/env/bin/gunicorn --workers 3 --bind unix:/var/www/cm-1st-web-marketing-class-2025/gunicorn.sock mysite.wsgi:application
+ExecStart=/var/www/cm-1st-web-marketing-class-2025/env/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 mysite.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
