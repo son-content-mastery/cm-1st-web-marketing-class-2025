@@ -59,7 +59,9 @@ python manage.py createsuperuser
 
 > Check Overall working
 
-`python manage.py runserver 0.0.0.0:8000`
+```sh
+python manage.py runserver 0.0.0.0:8000
+```
 
 ## Step 7: Collect Static Files
 
@@ -71,7 +73,7 @@ python manage.py createsuperuser
 
 > Run Test Gunicorn:
 
-`gunicorn --bind 0.0.0.0:8000 mysite.wsgi.application`
+`gunicorn --bind 0.0.0.0:8000 mysite.wsgi:application`
 
 ## Step 9: Setup a Dedicated Linux User for Django
 
