@@ -138,8 +138,8 @@ vi /etc/nginx/sites-available/django_project
 server {
    listen 80;
    listen [::]:80;
-   server_name www.wizzops.cloud;
-   return 301 http://wizzops.cloud$request_uri;
+   server_name www.meowsalid.com;
+   return 301 $scheme://meowsalid.com$request_uri;
 }
 
 server {
