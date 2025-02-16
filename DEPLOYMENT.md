@@ -239,3 +239,7 @@ ufw allow 'OpenSSH'
 systemctl status gunicorn
 systemctl status nginx
 ```
+
+## Reference
+
+- [how-to-set-up-a-firewall-with-ufw-on-ubuntu](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu)
