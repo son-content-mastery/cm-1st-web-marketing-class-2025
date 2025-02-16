@@ -136,23 +136,31 @@ vi /etc/nginx/sites-available/django_project
 
 ```sh
 server {
-    listen 80;
-    server_name www.wizzops.cloud wizzops.cloud;
+   listen 80;
+   listen [::]:80;
+   server_name www.wizzops.cloud;
+   return 301 http://wizzops.cloud$request_uri;
+}
 
-    location / {
-        include proxy_params;
-        proxy_pass http://127.0.0.1:8000;
-    }
+server {
+   listen 80;
+   listen [::]:80;
+   server_name wizzops.cloud;
 
-    location /static/ {
-        alias /var/www/cm-1st-web-marketing-class-2025/staticfiles/;
-    }
+   location / {
+       include proxy_params;
+       proxy_pass http://127.0.0.1:8000;
+   }
 
-    location /media/ {
-        alias /var/www/cm-1st-web-marketing-class-2025/media/;
-    }
+   location /static/ {
+       alias /var/www/cm-1st-web-marketing-class-2025/staticfiles/;
+   }
 
-    client_max_body_size 100M;
+   location /media/ {
+       alias /var/www/cm-1st-web-marketing-class-2025/media/;
+   }
+
+   client_max_body_size 100M;
 }
 ```
 
